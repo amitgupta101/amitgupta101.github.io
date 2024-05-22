@@ -52,8 +52,12 @@
 
     <script>
         async function fetchNews() {
-            const response = await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=c3b965516bee48878f8d405156c91abf'); // Replace 'YOUR_API_KEY' with your News API key
+            // Replace 'YOUR_API_KEY' with your News API key
+            //const response = await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=c3b965516bee48878f8d405156c91abf'); 
+            const response = await fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=c3b965516bee48878f8d405156c91abf'); 
             //https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c3b965516bee48878f8d405156c91abf
+            
+
             
             const data = await response.json();
             const newsList = document.getElementById('news-list');
