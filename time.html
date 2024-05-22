@@ -39,7 +39,7 @@
 
     <script>
         function updateTime() {
-            const options = { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const options = { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: 'numeric'};
             const timeString = new Date().toLocaleTimeString('en-US', options);
             document.getElementById('current-time').textContent = timeString;
         }
