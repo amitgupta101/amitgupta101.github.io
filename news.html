@@ -59,13 +59,27 @@
             
 
             
+            // const data = await response.json();
+            // const newsList = document.getElementById('news-list');
+            // newsList.innerHTML = ''; // Clear the loading message
+
+            // data.articles.forEach(article => {
+            //     const li = document.createElement('li');
+            //     li.classList.add('news-item');
+            //     const a = document.createElement('a');
+            //     a.href = article.url;
+            //     a.textContent = article.title;
+            //     a.target = '_blank';
+            //     li.appendChild(a);
+            //     newsList.appendChild(li);
+
+
             const data = await response.json();
             const newsList = document.getElementById('news-list');
-            newsList.innerHTML = ''; // Clear the loading message
+            //newsList.innerHTML = ''; // Clear the loading message
 
             data.articles.forEach(article => {
                 const li = document.createElement('li');
-                li.classList.add('news-item');
                 const a = document.createElement('a');
                 a.href = article.url;
                 a.textContent = article.title;
