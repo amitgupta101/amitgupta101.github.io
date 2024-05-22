@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Time in Bangalore</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .time-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .time-container h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .time-container p {
+            margin: 5px 0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="time-container">
+        <h1>Current Time in Bangalore, India</h1>
+        <p id="current-time">Loading...</p>
+    </div>
+
+    <script>
+        function updateTime() {
+            const options = { timeZone: 'Asia/Kolkata', hour12: true, hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const timeString = new Date().toLocaleTimeString('en-US', options);
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000); // Update time every second
+        updateTime(); // Update time immediately when the page loads
+    </script>
+</body>
+</html>
