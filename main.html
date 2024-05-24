@@ -76,7 +76,7 @@
 <script>
     // Fetch weather data
     async function fetchWeather() {
-        const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+        const apiKey = '4e2d4025ab87f76b2c181bbe43ff089f'; // Replace with your OpenWeatherMap API key
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bangalore&units=metric&appid=${apiKey}`);
         const data = await response.json();
         const weather = document.getElementById('weather');
@@ -107,7 +107,7 @@
 
     // Fetch news data
     async function fetchNews() {
-        const apiKey = 'YOUR_NEWS_API_KEY'; // Replace with your NewsAPI key
+        const apiKey = 'c3b965516bee48878f8d405156c91abf'; // Replace with your NewsAPI key
         const response = await fetch(`https://newsapi.org/v2/top-headlines?category=general&pageSize=5&apiKey=${apiKey}`);
         const data = await response.json();
         const newsList = document.getElementById('news-list');
