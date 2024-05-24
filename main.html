@@ -1,157 +1,161 @@
+//weather
+//4e2d4025ab87f76b2c181bbe43ff089f
+//news
+//c3b965516bee48878f8d405156c91abf
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informative Dashboard</title>
+    <title>Current Time, Weather, and News</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            background: transparent;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            background: transparent;
+            background-image: url('https://www.transparenttextures.com/patterns/white-paper.png'); /* Optional background pattern */
         }
         .container {
             position: relative;
-            width: 90%;
-            height: 90%;
-            border-radius: 10px;
+            width: 100%;
+            height: 100%;
+        }
+        .widget {
+            position: absolute;
+            padding: 20px;
             background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .weather {
-            position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 20px;
+            left: 20px;
         }
         .clock {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            text-align: right;
+            top: 20px;
+            right: 20px;
         }
-        .ticker {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            width: 40%;
+        .news-ticker {
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 50px;
             overflow: hidden;
-            white-space: nowrap;
-        }
-        .ticker span {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 20s linear infinite;
-        }
-        @keyframes ticker {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
         }
         .calendar {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 20px;
+            left: 20px;
         }
-        .calendar table {
-            border-collapse: collapse;
+        #news-ticker-content {
+            animation: ticker 15s linear infinite;
         }
-        .calendar th, .calendar td {
-            border: 1px solid #000;
-            padding: 5px;
-            text-align: center;
+        @keyframes ticker {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="weather" id="weather">Loading weather...</div>
-        <div class="clock" id="clock">
-            <div id="local-time">Loading local time...</div>
-            <div id="dallas-time">Loading Dallas time...</div>
-            <div id="dc-time">Loading Washington DC time...</div>
-            <div id="chennai-time">Loading Chennai time...</div>
+        <div class="widget weather" id="weather">
+            <h2>Weather</h2>
+            <p id="location">Loading...</p>
+            <p id="temperature"></p>
+            <p id="description"></p>
         </div>
-        <div class="ticker">
-            <span id="news-ticker">Loading news...</span>
+        <div class="widget clock">
+            <h2>Current Time</h2>
+            <p id="current-time">Loading...</p>
+            <h3>Dallas</h3>
+            <p id="dallas-time">Loading...</p>
+            <h3>Washington DC</h3>
+            <p id="dc-time">Loading...</p>
+            <h3>Chennai</h3>
+            <p id="chennai-time">Loading...</p>
         </div>
-        <div class="calendar" id="calendar"></div>
+        <div class="widget news-ticker">
+            <div id="news-ticker-content">
+                <!-- World news from BBC -->
+            </div>
+        </div>
+        <div class="widget calendar" id="calendar">
+            <!-- Compact calendar widget -->
+        </div>
     </div>
 
     <script>
-        // Fetch weather data
-        async function fetchWeather() {
+        // Fetch current location and weather
+        function fetchWeather(lat, lon) {
             const apiKey = '4e2d4025ab87f76b2c181bbe43ff089f'; // Replace with your OpenWeatherMap API key
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=Bangalore&units=metric&appid=${apiKey}`);
-            const data = await response.json();
-            document.getElementById('weather').textContent = `Bangalore: ${data.main.temp}°C, ${data.weather[0].description}`;
+            fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('location').textContent = data.name;
+                    document.getElementById('temperature').textContent = `Temperature: ${data.main.temp}°C`;
+                    document.getElementById('description').textContent = `Weather: ${data.weather[0].description}`;
+                })
+                .catch(error => console.error('Error fetching weather:', error));
         }
 
-        // Fetch news data
+        navigator.geolocation.getCurrentPosition(position => {
+            const { latitude, longitude } = position.coords;
+            fetchWeather(latitude, longitude);
+        });
+
+        // Update current time and other cities' times
+        function updateTime() {
+            const options = { hour12: true, hour: 'numeric', minute: 'numeric' };
+            const now = new Date();
+
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', options);
+            document.getElementById('dallas-time').textContent = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' })).toLocaleTimeString('en-US', options);
+            document.getElementById('dc-time').textContent = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' })).toLocaleTimeString('en-US', options);
+            document.getElementById('chennai-time').textContent = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })).toLocaleTimeString('en-US', options);
+        }
+
+        setInterval(updateTime, 60000); // Update every minute
+        updateTime(); // Initial call
+
+        // Fetch and display BBC World news ticker
         async function fetchNews() {
-            const apiKey = 'c3b965516bee48878f8d405156c91abf'; // Replace with your NewsAPI key
-            const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
+            const response = await fetch('https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=c3b965516bee48878f8d405156c91abf'); // Replace 'YOUR_API_KEY' with your News API key
             const data = await response.json();
-            const headlines = data.articles.map(article => article.title).join(' | ');
-            document.getElementById('news-ticker').textContent = headlines;
+            const newsTicker = document.getElementById('news-ticker-content');
+            newsTicker.innerHTML = data.articles.map(article => `<p>${article.title}</p>`).join('');
         }
 
-        // Update clock
-        function updateClock() {
-            const now = new Date();
-            const options = { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true };
-            document.getElementById('local-time').textContent = `Local Time: ${now.toLocaleTimeString('en-US', options)}`;
-
-            const dallasOptions = { timeZone: 'America/Chicago', ...options };
-            document.getElementById('dallas-time').textContent = `Dallas: ${now.toLocaleTimeString('en-US', dallasOptions)}`;
-
-            const dcOptions = { timeZone: 'America/New_York', ...options };
-            document.getElementById('dc-time').textContent = `Washington DC: ${now.toLocaleTimeString('en-US', dcOptions)}`;
-
-            const chennaiOptions = { timeZone: 'Asia/Kolkata', ...options };
-            document.getElementById('chennai-time').textContent = `Chennai: ${now.toLocaleTimeString('en-US', chennaiOptions)}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // Generate calendar
-        function generateCalendar() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth();
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            let calendarHtml = '<table>';
-            calendarHtml += '<tr><th>Su</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th></tr><tr>';
-
-            for (let i = 0; i < firstDay; i++) {
-                calendarHtml += '<td></td>';
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                if ((day + firstDay - 1) % 7 === 0) {
-                    calendarHtml += '</tr><tr>';
-                }
-                calendarHtml += `<td>${day}</td>`;
-            }
-
-            calendarHtml += '</tr></table>';
-            document.getElementById('calendar').innerHTML = calendarHtml;
-        }
-        generateCalendar();
-
-        // Fetch data initially
-        fetchWeather();
         fetchNews();
+
+        // Display a compact calendar for the current month
+        function generateCalendar() {
+            const calendarElement = document.getElementById('calendar');
+            const now = new Date();
+            const month = now.toLocaleString('default', { month: 'long' });
+            const year = now.getFullYear();
+            const daysInMonth = new Date(year, now.getMonth() + 1, 0).getDate();
+
+            let calendarHTML = `<h2>${month} ${year}</h2>`;
+            calendarHTML += '<table><tr>';
+            for (let day = 1; day <= daysInMonth; day++) {
+                if (day === 1) {
+                    const firstDayIndex = new Date(year, now.getMonth(), 1).getDay();
+                    calendarHTML += '<td colspan="' + firstDayIndex + '"></td>';
+                }
+                calendarHTML += `<td>${day}</td>`;
+                if ((day + new Date(year, now.getMonth(), 1).getDay()) % 7 === 0) {
+                    calendarHTML += '</tr><tr>';
+                }
+            }
+            calendarHTML += '</tr></table>';
+            calendarElement.innerHTML = calendarHTML;
+        }
+
+        generateCalendar();
     </script>
 </body>
 </html>
